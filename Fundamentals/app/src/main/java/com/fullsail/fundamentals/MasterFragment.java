@@ -1,5 +1,7 @@
 package com.fullsail.fundamentals;
 
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.app.ListFragment;
 import android.os.Bundle;
 import android.util.Log;
@@ -53,7 +55,19 @@ public class MasterFragment extends ListFragment {
     @Override
     public void onListItemClick(ListView _l, View _v, int _position, long _id) {
 
-        Object currentObject = adapterList.get(_position);
+
+        MainActivity.YoutubeItem currentObject = (MainActivity.YoutubeItem) adapterList.get(_position);
+        String passableString = currentObject.complete;
+
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction trans = fragmentManager.beginTransaction();
+        DetailFragment detailFragment = DetailFragment.newInstance(passableString);
+        trans.replace(R.id.detail_fragment, detailFragment, DetailFragment.TAG);
+        trans.commit();
+
+        //DetailFragment detailFragment = DetailFragment.newInstance();
+       // trans.replace(R.id.detail_fragment, detailFragment, MasterFragment.TAG);
+        //trans.commit();
 
 
         Log.i(TAG, "Breakpoint");

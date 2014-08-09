@@ -5,6 +5,7 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
+import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -14,6 +15,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.TextView;
 
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
@@ -35,6 +38,14 @@ import java.util.List;
 
 public class MainActivity extends Activity {
 
+    private TextView errorTextView;
+    private TextView searchEditText;
+    private Button searchButton;
+
+    Boolean connection;
+    Boolean success;
+    String resultMessage;
+
     public final String TAG = "MainActivity.TAG";
     ArrayAdapter adapter;
     FragmentManager fragmentManager;
@@ -46,35 +57,45 @@ public class MainActivity extends Activity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         final ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
         setContentView(R.layout.activity_main);
+        errorTextView = (TextView) findViewById(R.id.errorTextView);
         checkConnectivity(connectivityManager);
-        //API Pull
-        String symbol = "test";
-        symbol = symbol.replace(" ", "+");
-        try{
-            String urlString = "https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=5&q=" + symbol + "&type=video&videoCaption=closedCaption&key=AIzaSyD0m9TrFUsKqIwYCCyoX3ERVlSYTWm-FZk";
-            URL queryURL = new URL(urlString);
-            new GetSearchTask().execute(queryURL);
-        } catch (Exception e) {
+        searchButton = (Button) findViewById(R.id.searchButton);
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {  //Button selected
+                checkConnectivity(connectivityManager);
+                if (connection == true) {
+                    TextView searchEditText = (TextView) findViewById(R.id.searchTextField);
+                    String symbol = searchEditText.getText().toString();
+                    symbol = symbol.replace(" ", "+");
+                    try {
+                        String urlString = "https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=5&q=" + symbol + "&type=video&videoCaption=closedCaption&key=AIzaSyD0m9TrFUsKqIwYCCyoX3ERVlSYTWm-FZk";
+                        URL queryURL = new URL(urlString);
+                        new GetSearchTask().execute(queryURL);
+                        fragmentManager = getFragmentManager();
+                    } catch (Exception e) {
 
-        }
+                    }
+                } else {
 
-        //Fragment Placement
-        fragmentManager = getFragmentManager();
-        trans = fragmentManager.beginTransaction();
-
-        DetailFragment detailFragment = DetailFragment.newInstance();
-        trans.replace(R.id.detail_fragment, detailFragment, DetailFragment.TAG);
-        trans.commit();
+                }
+            }
+        });
 
     }
 
     public void checkConnectivity (ConnectivityManager manager){
         NetworkInfo netInfo = manager.getActiveNetworkInfo();
         if (netInfo != null && netInfo.isConnected()){
-
+            success = true;
+            resultMessage= "Connection Established";
+            connection = true;
         } else {
-
+            success = false;
+            resultMessage = "Error: No Connection!  Please check network connection.";
+            connection = false;
         }
+        updateResult();
     }
 
     private class GetSearchTask extends AsyncTask<URL, Integer, JSONObject> {
@@ -83,6 +104,7 @@ public class MainActivity extends Activity {
         protected void onPreExecute(){
 
         }
+
         protected JSONObject doInBackground(URL... urls) {
             String jsonString = "";
             for(URL queryURL : urls){
@@ -90,7 +112,8 @@ public class MainActivity extends Activity {
                     URLConnection conn = queryURL.openConnection();
                     jsonString = IOUtils.toString(conn.getInputStream());
                 } catch (Exception e){
-                    Log.e(TAG,"Could not establish URLConnection");
+                    success = false;
+                    resultMessage = "Could not establish URLConnection";
                     return null;
                 }
             }
@@ -103,14 +126,17 @@ public class MainActivity extends Activity {
             try{
                 apiData = new JSONObject(jsonString);
             } catch (Exception e){
-                Log.e(TAG,"Cannot convert API response to JSON");
+                success = false;
+                resultMessage = "Cannot convert API response to JSON";
                 apiData = null;
             }
 
             try{
-                Log.e(TAG,"API JSON data received");
+                success = true;
+                resultMessage ="API JSON data received";
             } catch (Exception e){
-                Log.e(TAG,"Could not parse data record.");
+                success = false;
+                resultMessage = "Could not parse data record.";
                 apiData = null;
             }
             return apiData;
@@ -118,9 +144,6 @@ public class MainActivity extends Activity {
 
 
         protected void onPostExecute(JSONObject apiData){
-
-
-
             JSONObject currentObject = null;
             JSONArray apiDataArray;
             ArrayList myList = null;
@@ -138,7 +161,8 @@ public class MainActivity extends Activity {
                         myList.add(buildYoutubeItem(currentObject));
                         Log.e(TAG, "Item " + i + " added");
                     }
-                    Log.e(TAG, "API List compiled");
+                    success = true;
+                    resultMessage= "API Display Complete.";
                     trans = fragmentManager.beginTransaction();
 
                     MasterFragment masterFragment = MasterFragment.newInstance(myList);
@@ -149,11 +173,12 @@ public class MainActivity extends Activity {
 
 
                 } catch (JSONException e) {
-                    Log.e(TAG, "Error Setting Up Display");
+                    success = false;
+                    resultMessage= "Error Setting Up Display";
                 }
+                updateResult();
 
             }
-
         }
     }
 
@@ -166,7 +191,8 @@ public class MainActivity extends Activity {
             String channelTitle = (object != null) ? object.getString("channelTitle") : null;
             String videoTitle = (object != null) ? object.getString("title") : null;
             String description = (object != null) ? object.getString("description") : null;
-            returnedItem = new YoutubeItem(publishedAt, channelTitle, videoTitle, description);
+            String complete = (object != null) ? object.toString() : null;
+            returnedItem = new YoutubeItem(publishedAt, channelTitle, videoTitle, description, complete);
         } catch (JSONException e){
             Log.e(TAG, "Error setting up strings");
         }
@@ -179,12 +205,14 @@ public class MainActivity extends Activity {
         public String channelTitle;
         public String videoTitle;
         public String description;
+        public String complete;
 
-        public YoutubeItem(String publishedAt, String channelTitle, String videoTitle, String description){
+        public YoutubeItem(String publishedAt, String channelTitle, String videoTitle, String description, String complete){
             this.publishedAt = publishedAt;
             this.channelTitle = channelTitle;
             this.videoTitle = videoTitle;
             this.description = description;
+            this.complete = complete;
         }
 
         @Override
@@ -215,6 +243,15 @@ public class MainActivity extends Activity {
             e.printStackTrace();
         }
     };
+
+    public void updateResult (){
+        if (success){
+            errorTextView.setTextColor(Color.GREEN);
+        } else {
+            errorTextView.setTextColor(Color.RED);
+        }
+        errorTextView.setText(resultMessage);
+    }
 
 
 }
