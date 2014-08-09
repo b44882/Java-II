@@ -1,38 +1,23 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_marginLeft="16dp"
-    android:layout_marginRight="16dp"
-    android:baselineAligned="false"
-    android:divider="?android:attr/dividerHorizontal"
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
     android:orientation="horizontal"
-    android:showDividers="middle"
-    tools:context=".PickleListActivity">
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:weightSum="1">
 
-    <!--
-    This layout is a two-pane layout for the Pickles
-    master/detail flow. See res/values-large/refs.xml and
-    res/values-sw600dp/refs.xml for an example of layout aliases
-    that replace the single-pane version of the layout with
-    this two-pane version.
-
-    For more on layout aliases, see:
-    http://developer.android.com/training/multiscreen/screensizes.html#TaskUseAliasFilters
-    -->
-
-    <fragment
-        android:id="@+id/pickle_list"
-        android:name="com.fullsail.fundamentals.MasterFragment"
-        android:layout_width="0dp"
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="3.13"
-        tools:layout="@android:layout/list_content" />
+        android:id="@+id/master_fragment"
+        android:layout_weight="0.50"></LinearLayout>
 
-    <FrameLayout
-        android:id="@+id/detail_container"
-        android:layout_width="0dp"
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="3" />
-
+        android:id="@+id/detail_fragment"
+        android:layout_weight="0.50"></LinearLayout>
 </LinearLayout>

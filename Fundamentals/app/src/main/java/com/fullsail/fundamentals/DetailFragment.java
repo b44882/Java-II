@@ -14,10 +14,12 @@ import android.widget.TextView;
 public class DetailFragment extends Fragment{
 
     public static final String TAG = "DetailFragment.TAG";
+    public static final String ARG_TEXT = "DetailFragment.ARG_ARRAY";
 
     public static DetailFragment newInstance() {
         DetailFragment frag = new DetailFragment();
         return frag;
+
     }
 
     @Override
@@ -33,7 +35,7 @@ public class DetailFragment extends Fragment{
         super.onActivityCreated(_savedInstanceState);
 
         // Get our TextView and set some text to it.
-        TextView titleTextView = (TextView)getView().findViewById(R.id.titleTextView);
+        TextView titleTextView = (TextView)getView().findViewById(R.id.video_title);
         titleTextView.setText("Hello Title!");
     }
 
