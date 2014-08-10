@@ -10,7 +10,8 @@
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
+        android:layout_height="fill_parent"
+        android:id="@+id/complete_view">
 
         <LinearLayout
             android:orientation="horizontal"
@@ -21,6 +22,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/errorTextView" />
+
         </LinearLayout>
 
         <LinearLayout
@@ -32,13 +34,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/searchTextField"
-                android:layout_weight="0.47" />
+                android:layout_weight="0.40" />
 
             <Button
                 android:layout_width="wrap_content"
-                android:layout_height="36dp"
+                android:layout_height="35dp"
                 android:text="Search"
-                android:id="@+id/searchButton" />
+                android:id="@+id/searchButton"
+                android:textSize="12dp" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:text="Settings"
+                android:id="@+id/settingsButton"
+                android:textSize="12dp" />
         </LinearLayout>
 
         <LinearLayout
@@ -51,14 +61,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/master_fragment"
-                android:layout_weight="0.50"></LinearLayout>
+                android:layout_weight="0.50" />
 
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/detail_fragment"
-                android:layout_weight="0.50"></LinearLayout>
+                android:layout_weight="0.50"/>
         </LinearLayout>
 
     </LinearLayout>

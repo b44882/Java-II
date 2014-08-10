@@ -4,12 +4,17 @@ import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
+import android.media.audiofx.BassBoost;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceActivity;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -41,12 +46,18 @@ public class MainActivity extends Activity {
     private TextView errorTextView;
     private TextView searchEditText;
     private Button searchButton;
+    private Button settingsButton;
 
     Boolean connection;
     Boolean success;
     String resultMessage;
 
+    SharedPreferences defaultPrefs;
+
     public final String TAG = "MainActivity.TAG";
+
+
+
     ArrayAdapter adapter;
     FragmentManager fragmentManager;
     FragmentTransaction trans;
@@ -60,12 +71,33 @@ public class MainActivity extends Activity {
         errorTextView = (TextView) findViewById(R.id.errorTextView);
         checkConnectivity(connectivityManager);
         searchButton = (Button) findViewById(R.id.searchButton);
+        settingsButton = (Button) findViewById(R.id.settingsButton);
+
+        defaultPrefs = this.getSharedPreferences("PREFS", Context.MODE_PRIVATE);
+        SharedPreferences.Editor edit = defaultPrefs.edit();
+        edit.putBoolean("wifiData", true);
+        edit.putBoolean("dataData", true);
+        edit.apply();
+
+        settingsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                fragmentManager = getFragmentManager();
+                trans = fragmentManager.beginTransaction();
+                SettingsFragment settingsFragment = new SettingsFragment();
+                trans.replace(R.id.master_fragment, settingsFragment, SettingsFragment.TAG);
+                trans.commit();
+
+            }
+        });
+
+
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {  //Button selected
                 checkConnectivity(connectivityManager);
                 if (connection == true) {
-                    TextView searchEditText = (TextView) findViewById(R.id.searchTextField);
+                    searchEditText = (TextView) findViewById(R.id.searchTextField);
                     String symbol = searchEditText.getText().toString();
                     symbol = symbol.replace(" ", "+");
                     try {
@@ -251,6 +283,25 @@ public class MainActivity extends Activity {
             errorTextView.setTextColor(Color.RED);
         }
         errorTextView.setText(resultMessage);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+        if (id == R.id.action_settings) {
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
 

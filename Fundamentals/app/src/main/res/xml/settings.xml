@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <PreferenceCategory android:title="Connection Settings" >
+
+        <Preference
+            android:key="ALL_CLICK"
+            android:summary="Enable WIFI and DATA."
+            android:title="All Connections" />
+
+        <Preference
+            android:key="WIFI_CLICK"
+            android:summary="Enable WIFI only."
+            android:title="Wifi Only" />
+
+        <Preference
+            android:key="NONE_CLICK"
+            android:summary="Disable WIFI and DATA."
+            android:title="None" />
+
+
+    </PreferenceCategory>
+
+</PreferenceScreen>
