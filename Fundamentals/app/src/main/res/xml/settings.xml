@@ -4,20 +4,14 @@
     <PreferenceCategory android:title="Connection Settings" >
 
         <Preference
-            android:key="ALL_CLICK"
-            android:summary="Enable WIFI and DATA."
-            android:title="All Connections" />
+            android:key="NETWORK_CLICK"
+            android:summary="Get fresh data from Network."
+            android:title="Data from Network" />
 
         <Preference
-            android:key="WIFI_CLICK"
-            android:summary="Enable WIFI only."
-            android:title="Wifi Only" />
-
-        <Preference
-            android:key="NONE_CLICK"
-            android:summary="Disable WIFI and DATA."
-            android:title="None" />
-
+            android:key="LOCAL_CLICK"
+            android:summary="Used previously stored data."
+            android:title="Data from Local Storage" />
 
     </PreferenceCategory>
 

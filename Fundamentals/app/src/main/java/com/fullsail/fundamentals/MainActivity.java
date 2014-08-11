@@ -1,62 +1,54 @@
+//Brett Gear
+//Java2 1408
+
 package com.fullsail.fundamentals;
 
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
-import android.media.audiofx.BassBoost;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceActivity;
-import android.preference.PreferenceManager;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.TextView;
-
+import android.widget.Toast;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
-import java.lang.reflect.Array;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
-import java.util.List;
+
 
 
 public class MainActivity extends Activity {
 
     private TextView errorTextView;
     private TextView searchEditText;
-    private Button searchButton;
-    private Button settingsButton;
+
+    ConnectivityManager connectivityManager;
 
     Boolean connection;
     Boolean success;
     String resultMessage;
 
+
     SharedPreferences defaultPrefs;
 
     public final String TAG = "MainActivity.TAG";
-
-
 
     ArrayAdapter adapter;
     FragmentManager fragmentManager;
@@ -66,17 +58,16 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle _savedInstanceState) {
         super.onCreate(_savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-        final ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+        connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
         setContentView(R.layout.activity_main);
         errorTextView = (TextView) findViewById(R.id.errorTextView);
         checkConnectivity(connectivityManager);
-        searchButton = (Button) findViewById(R.id.searchButton);
-        settingsButton = (Button) findViewById(R.id.settingsButton);
+        Button searchButton = (Button) findViewById(R.id.searchButton);
+        Button settingsButton = (Button) findViewById(R.id.settingsButton);
 
         defaultPrefs = this.getSharedPreferences("PREFS", Context.MODE_PRIVATE);
         SharedPreferences.Editor edit = defaultPrefs.edit();
-        edit.putBoolean("wifiData", true);
-        edit.putBoolean("dataData", true);
+        edit.putBoolean("network", true);
         edit.apply();
 
         settingsButton.setOnClickListener(new View.OnClickListener() {
@@ -91,34 +82,64 @@ public class MainActivity extends Activity {
             }
         });
 
-
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {  //Button selected
-                checkConnectivity(connectivityManager);
-                if (connection == true) {
-                    searchEditText = (TextView) findViewById(R.id.searchTextField);
-                    String symbol = searchEditText.getText().toString();
-                    symbol = symbol.replace(" ", "+");
-                    try {
-                        String urlString = "https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=5&q=" + symbol + "&type=video&videoCaption=closedCaption&key=AIzaSyD0m9TrFUsKqIwYCCyoX3ERVlSYTWm-FZk";
-                        URL queryURL = new URL(urlString);
-                        new GetSearchTask().execute(queryURL);
-                        fragmentManager = getFragmentManager();
-                    } catch (Exception e) {
+                Boolean permission = checkNetworkPermission();
+                if (permission) {
+                    checkConnectivity(connectivityManager);
+                    if (connection) {
+                        searchEditText = (TextView) findViewById(R.id.searchTextField);
+                        String symbol = searchEditText.getText().toString();
+                        symbol = symbol.replace(" ", "+");
+                        try {
+                            String urlString = "https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=5&q=" + symbol + "&type=video&videoCaption=closedCaption&key=AIzaSyD0m9TrFUsKqIwYCCyoX3ERVlSYTWm-FZk";
+                            URL queryURL = new URL(urlString);
+                            new GetSearchTask().execute(queryURL);
+                            fragmentManager = getFragmentManager();
+                        } catch (Exception ignored) {
+
+                        }
+                    } else {
 
                     }
                 } else {
-
+                    String storageString = openObjectSerialize();
+                    if (storageString != null) {
+                        showToast("Cancelling query.  Pulling local data.  Please enable network.");
+                        JSONObject storageData = convertStringToJsonObject(storageString);
+                        buildMasterFragment(storageData);
+                        success = false;
+                        resultMessage = "Last saved data pulled: Network pull disabled.";
+                        updateResult();
+                    } else {
+                        showToast("No local data.  Please enable network.");
+                    }
                 }
             }
         });
 
     }
 
+    public boolean checkNetworkPermission () {
+        defaultPrefs = this.getSharedPreferences("PREFS", Context.MODE_PRIVATE);
+        return defaultPrefs.getBoolean("network", true);
+    }
+
+
     public void checkConnectivity (ConnectivityManager manager){
         NetworkInfo netInfo = manager.getActiveNetworkInfo();
-        if (netInfo != null && netInfo.isConnected()){
+        if(netInfo.getType() == ConnectivityManager.TYPE_MOBILE) {
+            success = true;
+            resultMessage= "Mobile connected.";
+            connection = true;
+        } else if(netInfo.getType() == ConnectivityManager.TYPE_WIFI) {
+            success = true;
+            resultMessage= "Wifi connected.";
+            connection = true;
+        }
+
+        if (netInfo.isConnected()){
             success = true;
             resultMessage= "Connection Established";
             connection = true;
@@ -131,12 +152,10 @@ public class MainActivity extends Activity {
     }
 
     private class GetSearchTask extends AsyncTask<URL, Integer, JSONObject> {
-
         @Override
         protected void onPreExecute(){
 
         }
-
         protected JSONObject doInBackground(URL... urls) {
             String jsonString = "";
             for(URL queryURL : urls){
@@ -149,68 +168,13 @@ public class MainActivity extends Activity {
                     return null;
                 }
             }
-
             objectSerialize(jsonString);
-            openObjectSerialize();
-
-            JSONObject apiData;
-
-            try{
-                apiData = new JSONObject(jsonString);
-            } catch (Exception e){
-                success = false;
-                resultMessage = "Cannot convert API response to JSON";
-                apiData = null;
-            }
-
-            try{
-                success = true;
-                resultMessage ="API JSON data received";
-            } catch (Exception e){
-                success = false;
-                resultMessage = "Could not parse data record.";
-                apiData = null;
-            }
-            return apiData;
+            jsonString = openObjectSerialize();
+            return convertStringToJsonObject(jsonString);
         }
 
-
         protected void onPostExecute(JSONObject apiData){
-            JSONObject currentObject = null;
-            JSONArray apiDataArray;
-            ArrayList myList = null;
-
-            if (apiData != null)
-            {
-                try {
-                    apiDataArray = (apiData!= null) ? apiData.getJSONArray("items") : null;
-                    for (int i = 0; i < apiDataArray.length(); i++)
-                    {
-                        currentObject = (apiDataArray != null) ? apiDataArray.getJSONObject(i).getJSONObject("snippet") : null;
-                        if (myList == null){
-                            myList = new ArrayList();
-                        }
-                        myList.add(buildYoutubeItem(currentObject));
-                        Log.e(TAG, "Item " + i + " added");
-                    }
-                    success = true;
-                    resultMessage= "API Display Complete.";
-                    trans = fragmentManager.beginTransaction();
-
-                    MasterFragment masterFragment = MasterFragment.newInstance(myList);
-                    trans.replace(R.id.master_fragment, masterFragment, MasterFragment.TAG);
-                    trans.commit();
-
-
-
-
-                } catch (JSONException e) {
-                    success = false;
-                    resultMessage= "Error Setting Up Display";
-                }
-                updateResult();
-
-            }
+            buildMasterFragment(apiData);
         }
     }
 
@@ -230,7 +194,7 @@ public class MainActivity extends Activity {
         }
 
         return returnedItem;
-    };
+    }
 
     public class YoutubeItem{
         public String publishedAt;
@@ -263,18 +227,21 @@ public class MainActivity extends Activity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    };
+    }
 
-    public void openObjectSerialize() {
+    public String openObjectSerialize() {
+        String loadedString;
         try {
             FileInputStream fin = openFileInput("recent_api.dat");
             ObjectInputStream oin = new ObjectInputStream(fin);
-            String loadedString = (String) oin.readObject();
+            loadedString = (String) oin.readObject();
             oin.close();
         } catch(Exception e) {
             e.printStackTrace();
+            loadedString = null;
         }
-    };
+        return loadedString;
+    }
 
     public void updateResult (){
         if (success){
@@ -284,25 +251,56 @@ public class MainActivity extends Activity {
         }
         errorTextView.setText(resultMessage);
     }
+    public void showToast(String action)
+    {
+        Context context = this.getApplicationContext();
+        int duration = Toast.LENGTH_SHORT;
+        Toast toast = Toast.makeText(context, action, duration);
+        toast.show();
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
+    public JSONObject convertStringToJsonObject(String jsonString) {
+        JSONObject apiData;
+
+        try {
+            apiData = new JSONObject(jsonString);
+        } catch (Exception e) {
+            success = false;
+            resultMessage = "Cannot convert API response to JSON";
+            apiData = null;
         }
-        return super.onOptionsItemSelected(item);
+        return apiData;
     }
 
+    public void buildMasterFragment (JSONObject apiData) {
+        JSONObject currentObject;
+        JSONArray apiDataArray;
+        ArrayList myList = null;
 
+        if (apiData != null) {
+            try {
+                apiDataArray = apiData.getJSONArray("items");
+                for (int i = 0; i < apiDataArray.length(); i++) {
+                    currentObject = apiDataArray.getJSONObject(i).getJSONObject("snippet");
+                    if (myList == null) {
+                        myList = new ArrayList();
+                    }
+                    myList.add(buildYoutubeItem(currentObject));
+                    Log.e(TAG, "Item " + i + " added");
+                }
+                success = true;
+                resultMessage = "API Display Complete.";
+                trans = fragmentManager.beginTransaction();
+
+                MasterFragment masterFragment = MasterFragment.newInstance(myList);
+                trans.replace(R.id.master_fragment, masterFragment, MasterFragment.TAG);
+                trans.commit();
+            } catch (JSONException e) {
+                success = false;
+                resultMessage = "Error Setting Up Display";
+            }
+        }
+        updateResult();
+    }
 }

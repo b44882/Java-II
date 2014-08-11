@@ -1,3 +1,6 @@
+//Brett Gear
+//Java2 1408
+
 package com.fullsail.fundamentals;
 
 import android.content.Context;
@@ -10,7 +13,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 /**
- * Created by administrator on 8/10/14.
+ * Created by Brett Gear on 8/10/14.
  */
 public class SettingsFragment extends PreferenceFragment{
 
@@ -35,44 +38,30 @@ public class SettingsFragment extends PreferenceFragment{
     public void onActivityCreated(Bundle _savedInstanceState) {
         super.onActivityCreated(_savedInstanceState);
 
-        Preference allPref = findPreference("ALL_CLICK");
+        Preference allPref = findPreference("NETWORK_CLICK");
         allPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference _pref) {
                 SharedPreferences.Editor edit = defaultPrefs.edit();
-                edit.putBoolean("wifiData", true);
-                edit.putBoolean("dataData", true);
+                edit.putBoolean("network", true);
                 edit.apply();
-                showToast("Wifi On, Data On");
+                showToast("Network data get enabled.");
                 return true;
             }
         });
 
-        Preference wifiPref = findPreference("WIFI_CLICK");
+        Preference wifiPref = findPreference("LOCAL_CLICK");
         wifiPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference _pref) {
                 SharedPreferences.Editor edit = defaultPrefs.edit();
-                edit.putBoolean("wifiData", true);
-                edit.putBoolean("dataData", false);
+                edit.putBoolean("network", false);
                 edit.apply();
-                showToast("Wifi On, Data Off");
+                showToast("Network data get disabled: will get from local storage.");
                 return true;
             }
         });
 
-        Preference nonePref = findPreference("NONE_CLICK");
-        nonePref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-            @Override
-            public boolean onPreferenceClick(Preference _pref) {
-                SharedPreferences.Editor edit = defaultPrefs.edit();
-                edit.putBoolean("wifiData", false);
-                edit.putBoolean("dataData", false);
-                edit.apply();
-                showToast("Wifi Off, Data Off");
-                return true;
-            }
-        });
     }
 
     public void showToast(String action)
