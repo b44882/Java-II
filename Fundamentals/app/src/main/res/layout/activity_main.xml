@@ -63,12 +63,6 @@
                 android:id="@+id/master_fragment"
                 android:layout_weight="0.50" />
 
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/detail_fragment"
-                android:layout_weight="0.50"/>
         </LinearLayout>
 
     </LinearLayout>
