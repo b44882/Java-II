@@ -66,7 +66,7 @@ public class MasterFragment extends ListFragment {
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction trans = fragmentManager.beginTransaction();
         DetailFragment detailFragment = DetailFragment.newInstance(passableString);
-        trans.replace(R.id.detail_fragment, detailFragment, DetailFragment.TAG);
+        trans.replace(R.id.master_fragment, detailFragment, DetailFragment.TAG);
         trans.commit();
 
         //DetailFragment detailFragment = DetailFragment.newInstance();
