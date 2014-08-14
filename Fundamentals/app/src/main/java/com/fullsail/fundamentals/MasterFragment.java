@@ -6,7 +6,6 @@ package com.fullsail.fundamentals;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.ListFragment;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,15 +13,13 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import org.json.JSONObject;
-
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Brett Gear on 8/7/14.
  */
-public class MasterFragment extends ListFragment implements Serializable {
+public class MasterFragment extends ListFragment {
 
     ArrayList adapterList;
 
@@ -66,12 +63,11 @@ public class MasterFragment extends ListFragment implements Serializable {
         MainActivity.YoutubeItem currentObject = (MainActivity.YoutubeItem) adapterList.get(_position);
         String passableString = currentObject.complete;
 
-
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction trans = fragmentManager.beginTransaction();
         DetailFragment detailFragment = DetailFragment.newInstance(passableString);
         trans.replace(R.id.detail_fragment, detailFragment, DetailFragment.TAG);
-        trans.commit();*/
+        trans.commit();
 
         //DetailFragment detailFragment = DetailFragment.newInstance();
        // trans.replace(R.id.detail_fragment, detailFragment, MasterFragment.TAG);

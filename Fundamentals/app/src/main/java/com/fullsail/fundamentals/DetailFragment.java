@@ -24,9 +24,6 @@ public class DetailFragment extends Fragment{
 
     public static final String TAG = "DetailFragment.TAG";
     public static final String ARG_TEXT = "DetailFragment.ARG_STRING";
-    public static final String ARG_ITEM_ID = "item_id";
-
-    YoutubeItem object = null;
 
     public static DetailFragment newInstance(String string) {
 
@@ -41,39 +38,22 @@ public class DetailFragment extends Fragment{
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        if (getArguments().containsKey(ARG_ITEM_ID)) {
-
-            String argString = getArguments().getString(ARG_TEXT);
-            try {
-                object = buildYoutubeItem(new JSONObject(argString));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    @Override
     public View onCreateView(LayoutInflater _inflater, ViewGroup _container,
                              Bundle _savedInstanceState) {
-
+        // Create and return view for this fragment.
         View view = _inflater.inflate(R.layout.detail_fragment, _container, false);
-
-
-
-
-        TextView titleTV = (TextView) getView().findViewById(R.id.video_title);
-        TextView channelTV = (TextView)getView().findViewById(R.id.channel_title);
-        TextView descriptionTV = (TextView)getView().findViewById(R.id.description);
-        TextView publishedTV = (TextView)getView().findViewById(R.id.published);
         return view;
     }
 
     @Override
     public void onActivityCreated(Bundle _savedInstanceState) {
         super.onActivityCreated(_savedInstanceState);
+
+
+        TextView titleTV = (TextView) getView().findViewById(R.id.video_title);
+        TextView channelTV = (TextView)getView().findViewById(R.id.channel_title);
+        TextView descriptionTV = (TextView)getView().findViewById(R.id.description);
+        TextView publishedTV = (TextView)getView().findViewById(R.id.published);
 
         Bundle args = getArguments();
         if(args != null && args.containsKey(ARG_TEXT)) {
@@ -84,6 +64,10 @@ public class DetailFragment extends Fragment{
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+            titleTV.setText(object.videoTitle);
+            channelTV.setText(object.channelTitle);
+            descriptionTV.setText(object.description);
+            publishedTV.setText(object.publishedAt);
         }
 
     }
