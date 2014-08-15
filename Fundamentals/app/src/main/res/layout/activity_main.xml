@@ -15,13 +15,27 @@
 
         <LinearLayout
             android:orientation="horizontal"
-            android:layout_width="fill_parent"
-            android:layout_height="29dp">
+            android:layout_width="match_parent"
+            android:layout_height="34dp"
+            android:id="@+id/top_view">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/errorTextView" />
+                android:id="@+id/titleTextView"
+                android:textSize="16dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/errorTextView"
+                android:layout_gravity="bottom" />
 
         </LinearLayout>
 
@@ -60,8 +74,7 @@
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:id="@+id/master_fragment"
-                android:layout_weight="0.50" />
+                android:id="@+id/master_fragment" />
 
         </LinearLayout>
 

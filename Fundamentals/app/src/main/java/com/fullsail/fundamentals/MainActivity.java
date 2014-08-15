@@ -36,6 +36,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends Activity {
 
+    private TextView titleTextView;
     private TextView errorTextView;
     private TextView searchEditText;
 
@@ -61,6 +62,7 @@ public class MainActivity extends Activity {
         connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
         setContentView(R.layout.activity_main);
         errorTextView = (TextView) findViewById(R.id.errorTextView);
+        titleTextView = (TextView) findViewById(R.id.titleTextView);
         checkConnectivity(connectivityManager);
         Button searchButton = (Button) findViewById(R.id.searchButton);
         Button settingsButton = (Button) findViewById(R.id.settingsButton);
@@ -94,6 +96,7 @@ public class MainActivity extends Activity {
                         symbol = symbol.replace(" ", "+");
                         try {
                             String urlString = "https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=5&q=" + symbol + "&type=video&videoCaption=closedCaption&key=AIzaSyD0m9TrFUsKqIwYCCyoX3ERVlSYTWm-FZk";
+                            titleTextView.setText("Top 5 Videos for " + symbol);
                             URL queryURL = new URL(urlString);
                             new GetSearchTask().execute(queryURL);
                             fragmentManager = getFragmentManager();
@@ -111,6 +114,7 @@ public class MainActivity extends Activity {
                         buildMasterFragment(storageData);
                         success = false;
                         resultMessage = "Last saved data pulled: Network pull disabled.";
+                        titleTextView.setText("Previous Top 5 Results");
                         updateResult();
                     } else {
                         showToast("No local data.  Please enable network.");
