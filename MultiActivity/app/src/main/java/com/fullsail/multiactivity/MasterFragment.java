@@ -1,23 +1,21 @@
-//Brett Gear
-//Java2 1408
+package com.fullsail.multiactivity;
 
-package com.fullsail.fundamentals;
-
+import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.ListFragment;
-import android.content.SharedPreferences;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import org.json.JSONObject;
+
 import java.util.ArrayList;
-import java.util.List;
 
 /**
- * Created by Brett Gear on 8/7/14.
+ * Created by administrator on 8/19/14.
  */
 public class MasterFragment extends ListFragment {
 
@@ -25,9 +23,27 @@ public class MasterFragment extends ListFragment {
     public static final String TAG = "MasterFragment.TAG";
     private static final String ARG_TEXT = "MasterFragment.ARG_ARRAY";
 
+    private Callbacks mCallbacks;
+
+    public interface Callbacks {
+
+        public void onItemSelected(MasterActivity.PassableObject object);
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            mCallbacks = (Callbacks) activity;
+        } catch (ClassCastException ex) {
+            Log.e(TAG, "Casting the activity as a Callbacks listener failed"
+                    + ex);
+            mCallbacks = null;
+        }
+    }
+
     public static MasterFragment newInstance(ArrayList listArray) {
         MasterFragment frag = new MasterFragment();
-
         Bundle args = new Bundle();
         args.putParcelableArrayList(ARG_TEXT, listArray);
         frag.setArguments(args);
@@ -54,23 +70,13 @@ public class MasterFragment extends ListFragment {
         }
     }
 
-
     @Override
-    public void onListItemClick(ListView _l, View _v, int _position, long _id) {
+    public void onListItemClick(ListView l, View v, int position, long id) {
+        MasterActivity.PassableObject object = (MasterActivity.PassableObject) this.getListAdapter().getItem(position);
 
-
-        MainActivity.YoutubeItem currentObject = (MainActivity.YoutubeItem) adapterList.get(_position);
-        String passableString = currentObject.complete;
-
-        FragmentManager fragmentManager = getFragmentManager();
-        FragmentTransaction trans = fragmentManager.beginTransaction();
-        DetailFragment detailFragment = DetailFragment.newInstance(passableString);
-        trans.replace(R.id.master_fragment, detailFragment, DetailFragment.TAG);
-        trans.commit();
-
-        //DetailFragment detailFragment = DetailFragment.newInstance();
-       // trans.replace(R.id.detail_fragment, detailFragment, MasterFragment.TAG);
-        //trans.commit();
+        if (mCallbacks != null) {
+            mCallbacks.onItemSelected(object);
+        }
 
 
         Log.i(TAG, "Breakpoint");
@@ -78,3 +84,4 @@ public class MasterFragment extends ListFragment {
     }
 
 }
+

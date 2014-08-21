@@ -296,7 +296,6 @@ public class MainActivity extends Activity {
                 success = true;
                 resultMessage = "API Display Complete.";
                 trans = fragmentManager.beginTransaction();
-
                 MasterFragment masterFragment = MasterFragment.newInstance(myList);
                 trans.replace(R.id.master_fragment, masterFragment, MasterFragment.TAG);
                 trans.commit();
