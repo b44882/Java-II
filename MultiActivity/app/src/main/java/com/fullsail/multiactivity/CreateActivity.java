@@ -1,3 +1,6 @@
+//Brett Gear
+//Java 1408 Week 3
+
 package com.fullsail.multiactivity;
 
 import android.app.Activity;
@@ -21,6 +24,7 @@ public class CreateActivity extends Activity {
     TextView classEditText;
     TextView descriptionEditText;
     Button createItemButton;
+    Button gmailButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +35,8 @@ public class CreateActivity extends Activity {
         classEditText =(TextView) getFragmentManager().findFragmentById(R.id.create_fragment).getView().findViewById(R.id.classEditText);
         descriptionEditText =(TextView) getFragmentManager().findFragmentById(R.id.create_fragment).getView().findViewById(R.id.descriptionEditText);
         createItemButton = (Button) getFragmentManager().findFragmentById(R.id.create_fragment).getView().findViewById(R.id.createItemButton);
+        gmailButton = (Button) getFragmentManager().findFragmentById(R.id.create_fragment).getView().findViewById(R.id.gmail_button);
+        gmailButton.setVisibility(View.GONE);
 
         createItemButton.setText("Create");
         createItemButton.setOnClickListener(new View.OnClickListener() {

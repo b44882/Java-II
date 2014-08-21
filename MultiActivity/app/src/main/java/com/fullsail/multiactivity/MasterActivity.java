@@ -1,3 +1,6 @@
+//Brett Gear
+//Java 1408 Week 3
+
 package com.fullsail.multiactivity;
 
 import android.app.Activity;
@@ -31,6 +34,7 @@ public class MasterActivity extends Activity implements MasterFragment.Callbacks
 
 
     public static final int NEXT_REQUESTCODE = 1;
+    public static final int ITEM_REQUESTCODE = 2;
 
 
     @Override
@@ -80,23 +84,40 @@ public class MasterActivity extends Activity implements MasterFragment.Callbacks
                 serList = new ArrayList<SerializableObject>();
             }
 
-            if (result.getString("desc") == "delete"){
+            String nameString = result.getString("name");
+            String classString = result.getString("class");
+            String descString = result.getString("desc");
 
+            //Serialize
+            SerializableObject serObject = new SerializableObject(nameString,classString,descString);
+            serList.add(serObject);
+            objectSerialize(serList);
+
+            //Parse
+            PassableObject passObject = new PassableObject(nameString,classString,descString);
+            passList.add(passObject);
+
+            FragmentManager fragmentManager =  getFragmentManager();
+            FragmentTransaction trans = fragmentManager.beginTransaction();
+            MasterFragment masterFragment = MasterFragment.newInstance(passList);
+            trans.replace(R.id.master_fragment_container, masterFragment, MasterFragment.TAG);
+            trans.commit();
+        }
+        if (resultCode == RESULT_OK && requestCode == ITEM_REQUESTCODE) {
+
+            ArrayList<PassableObject> passList;
+            ArrayList<SerializableObject> serList;
+            Bundle result = data.getExtras();
+            serList = openObjectSerialize();
+            int position = result.getInt("position");
+            serList.remove(position);
+            objectSerialize(serList);
+            if (serList != null){
+                passList = convertSerToParse(serList);
             } else {
-                String nameString = result.getString("name");
-                String classString = result.getString("class");
-                String descString = result.getString("desc");
-
-                //Serialize
-                SerializableObject serObject = new SerializableObject(nameString,classString,descString);
-                serList.add(serObject);
-                objectSerialize(serList);
-
-                //Parse
-                PassableObject passObject = new PassableObject(nameString,classString,descString);
-                passList.add(passObject);
+                passList = new ArrayList<PassableObject>();
+                serList = new ArrayList<SerializableObject>();
             }
-
             FragmentManager fragmentManager =  getFragmentManager();
             FragmentTransaction trans = fragmentManager.beginTransaction();
             MasterFragment masterFragment = MasterFragment.newInstance(passList);
@@ -138,8 +159,7 @@ public class MasterActivity extends Activity implements MasterFragment.Callbacks
         nextActivity.putExtra("class", classString);
         nextActivity.putExtra("desc", descString);
         nextActivity.putExtra("position", position);
-        MasterActivity.this.startActivity(nextActivity);
-
+        MasterActivity.this.startActivityForResult(nextActivity, ITEM_REQUESTCODE);
     }
 
     public class PassableObject implements Parcelable {

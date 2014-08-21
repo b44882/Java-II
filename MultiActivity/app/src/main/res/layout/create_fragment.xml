@@ -79,6 +79,12 @@
             android:layout_height="wrap_content"
             android:text="Create"
             android:id="@+id/createItemButton" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Gmail"
+            android:id="@+id/gmail_button" />
     </LinearLayout>
 
 

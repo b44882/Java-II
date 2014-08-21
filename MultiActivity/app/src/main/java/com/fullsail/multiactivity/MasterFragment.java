@@ -1,3 +1,6 @@
+//Brett Gear
+//Java 1408 Week 3
+
 package com.fullsail.multiactivity;
 
 import android.app.Activity;
