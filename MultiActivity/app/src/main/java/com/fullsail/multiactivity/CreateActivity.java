@@ -31,6 +31,8 @@ public class CreateActivity extends Activity {
         classEditText =(TextView) getFragmentManager().findFragmentById(R.id.create_fragment).getView().findViewById(R.id.classEditText);
         descriptionEditText =(TextView) getFragmentManager().findFragmentById(R.id.create_fragment).getView().findViewById(R.id.descriptionEditText);
         createItemButton = (Button) getFragmentManager().findFragmentById(R.id.create_fragment).getView().findViewById(R.id.createItemButton);
+
+        createItemButton.setText("Create");
         createItemButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -50,6 +52,7 @@ public class CreateActivity extends Activity {
         returnIntent.putExtra("name", nameString);
         returnIntent.putExtra("class", classString);
         returnIntent.putExtra("desc", descString);
+        returnIntent.putExtra("reason", "create");
         setResult(RESULT_OK, returnIntent);
 
         finish();

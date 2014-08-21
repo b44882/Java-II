@@ -23,10 +23,11 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 
 
-public class MasterActivity extends Activity implements MasterFragment.Callbacks{
+public class MasterActivity extends Activity implements MasterFragment.Callbacks, Serializable{
 
 
     public static final int NEXT_REQUESTCODE = 1;
@@ -48,42 +49,85 @@ public class MasterActivity extends Activity implements MasterFragment.Callbacks
             }
         });
 
+        ArrayList<PassableObject> passList;
+        ArrayList<SerializableObject> serList;
+
+        serList = openObjectSerialize();
+
+        if (serList != null){
+            passList = convertSerToParse(serList);
+
+            FragmentManager fragmentManager =  getFragmentManager();
+            FragmentTransaction trans = fragmentManager.beginTransaction();
+            MasterFragment masterFragment = MasterFragment.newInstance(passList);
+            trans.replace(R.id.master_fragment_container, masterFragment, MasterFragment.TAG);
+            trans.commit();
+        }
 
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {   //When activity returns from Create
         if (resultCode == RESULT_OK && requestCode == NEXT_REQUESTCODE) {
 
-            ArrayList myList;
+            ArrayList<PassableObject> passList;
+            ArrayList<SerializableObject> serList;
             Bundle result = data.getExtras();
-
-            String nameString = result.getString("name");
-            String classString = result.getString("class");
-            String descString = result.getString("desc");
-
-            PassableObject object = new PassableObject(nameString,classString,descString);
-
-
-
-            myList = openObjectSerialize();
-            if (myList == null)
-            {
-                myList = new ArrayList();
+            serList = openObjectSerialize();
+            if (serList != null){
+                passList = convertSerToParse(serList);
+            } else {
+                passList = new ArrayList<PassableObject>();
+                serList = new ArrayList<SerializableObject>();
             }
-            myList.add(object);
-            objectSerialize(myList);
+
+            if (result.getString("desc") == "delete"){
+
+            } else {
+                String nameString = result.getString("name");
+                String classString = result.getString("class");
+                String descString = result.getString("desc");
+
+                //Serialize
+                SerializableObject serObject = new SerializableObject(nameString,classString,descString);
+                serList.add(serObject);
+                objectSerialize(serList);
+
+                //Parse
+                PassableObject passObject = new PassableObject(nameString,classString,descString);
+                passList.add(passObject);
+            }
 
             FragmentManager fragmentManager =  getFragmentManager();
             FragmentTransaction trans = fragmentManager.beginTransaction();
-            MasterFragment masterFragment = MasterFragment.newInstance(myList);
+            MasterFragment masterFragment = MasterFragment.newInstance(passList);
             trans.replace(R.id.master_fragment_container, masterFragment, MasterFragment.TAG);
             trans.commit();
-
         }
     }
 
+
+    public ArrayList<PassableObject> convertSerToParse (ArrayList<SerializableObject> list){
+        ArrayList parseList = new ArrayList();
+        if (list != null){
+            SerializableObject currentSerObject;
+            PassableObject convertedParObject;
+
+            for (int i = 0; i < list.size(); i++){
+
+                currentSerObject = list.get(i);
+                convertedParObject = new PassableObject(currentSerObject.getNameString(), currentSerObject.getClassString(), currentSerObject.getDescString());
+                if (convertedParObject != null){
+                    parseList.add(convertedParObject);
+                }
+            }
+        } else {
+            parseList = null;
+        }
+        return parseList;
+    }
+
     @Override
-    public void onItemSelected(PassableObject object) {
+    public void onItemSelected(PassableObject object, int position) {
 
         String nameString = String.valueOf(object.nameChar);
         String classString = String.valueOf(object.classChar);
@@ -93,11 +137,10 @@ public class MasterActivity extends Activity implements MasterFragment.Callbacks
         nextActivity.putExtra("name", nameString);
         nextActivity.putExtra("class", classString);
         nextActivity.putExtra("desc", descString);
+        nextActivity.putExtra("position", position);
         MasterActivity.this.startActivity(nextActivity);
 
     }
-
-
 
     public class PassableObject implements Parcelable {
 
@@ -127,10 +170,34 @@ public class MasterActivity extends Activity implements MasterFragment.Callbacks
         }
     }
 
-    public void objectSerialize (ArrayList list){
+    public class SerializableObject implements Serializable {
+
+        public String nameString;
+        public String classString;
+        public String descString;
+        //private static final long serialVersionUID = 528195923;
+
+        public SerializableObject(String nameString, String classString, String descString){
+            this.nameString = nameString;
+            this.classString = classString;
+            this.descString = descString;
+        }
+        public String getNameString(){
+            return this.nameString;
+        }
+        public String getClassString(){
+            return this.classString;
+        }
+        public String getDescString(){
+            return this.descString;
+        }
+
+    }
+
+    public void objectSerialize (ArrayList<SerializableObject> list){
 
         try {
-            FileOutputStream fos = openFileOutput("list.dat", Context.MODE_PRIVATE);
+            FileOutputStream fos = openFileOutput("save.bin", Context.MODE_PRIVATE);
             ObjectOutputStream oos = new ObjectOutputStream(fos);
             oos.writeObject(list);
             oos.close();
@@ -139,22 +206,21 @@ public class MasterActivity extends Activity implements MasterFragment.Callbacks
         }
     }
 
+    @SuppressWarnings("unchecked")
     public ArrayList openObjectSerialize() {
-        ArrayList list;
+        ArrayList<SerializableObject> list;
         try {
-            FileInputStream fin = openFileInput("list.dat");
+            FileInputStream fin = openFileInput("save.bin");
             ObjectInputStream oin = new ObjectInputStream(fin);
-            list = (ArrayList) oin.readObject();
+            list = (ArrayList<SerializableObject>) oin.readObject();
             oin.close();
         } catch(Exception e) {
             e.printStackTrace();
             list = null;
         }
+
         return list;
     }
-
-
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

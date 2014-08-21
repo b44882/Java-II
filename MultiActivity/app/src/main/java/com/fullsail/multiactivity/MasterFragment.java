@@ -27,7 +27,7 @@ public class MasterFragment extends ListFragment {
 
     public interface Callbacks {
 
-        public void onItemSelected(MasterActivity.PassableObject object);
+        public void onItemSelected(MasterActivity.PassableObject object, int position);
     }
 
     @Override
@@ -75,7 +75,7 @@ public class MasterFragment extends ListFragment {
         MasterActivity.PassableObject object = (MasterActivity.PassableObject) this.getListAdapter().getItem(position);
 
         if (mCallbacks != null) {
-            mCallbacks.onItemSelected(object);
+            mCallbacks.onItemSelected(object, position);
         }
 
 
