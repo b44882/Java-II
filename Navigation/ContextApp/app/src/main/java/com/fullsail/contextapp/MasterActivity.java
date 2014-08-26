@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -30,14 +31,6 @@ public class MasterActivity extends Activity implements Serializable, MasterFrag
         super.onCreate(savedInstanceState);
         setContentView(R.layout.master_activity);
 
-        Button createButton = (Button) findViewById(R.id.createButton);
-        createButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent nextActivity = new Intent(MasterActivity.this, CreateActivity.class);
-                MasterActivity.this.startActivityForResult(nextActivity, NEXT_REQUESTCODE);
-            }
-        });
 
         ArrayList<PassableObject> passList;
         ArrayList<SerializableObject> serList;
@@ -207,22 +200,32 @@ public class MasterActivity extends Activity implements Serializable, MasterFrag
     }
 
 
-
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.master, menu);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.mastermenu, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
+
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_add) {
+            Intent nextActivity = new Intent(MasterActivity.this, CreateActivity.class);
+            MasterActivity.this.startActivityForResult(nextActivity, NEXT_REQUESTCODE);
+            return true;
+        }
+        if (id == R.id.action_reset) {
+            ArrayList<PassableObject> passList;
+            ArrayList<SerializableObject> serList = new ArrayList<SerializableObject>();
+            objectSerialize(serList);
+            passList = convertSerToParse(serList);
+            FragmentManager fragmentManager =  getFragmentManager();
+            FragmentTransaction trans = fragmentManager.beginTransaction();
+            MasterFragment masterFragment = MasterFragment.newInstance(passList);
+            trans.replace(R.id.master_fragment_container, masterFragment, MasterFragment.TAG);
+            trans.commit();
             return true;
         }
         return super.onOptionsItemSelected(item);
