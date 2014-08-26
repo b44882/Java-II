@@ -1,7 +1,4 @@
-//Brett Gear
-//Java 1408 Week 3
-
-package com.fullsail.multiactivity;
+package com.fullsail.contextapp;
 
 import android.app.Activity;
 import android.app.FragmentManager;
@@ -11,16 +8,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ListView;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -30,18 +21,14 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 
-public class MasterActivity extends Activity implements MasterFragment.Callbacks, Serializable{
-
+public class MasterActivity extends Activity implements Serializable {
 
     public static final int NEXT_REQUESTCODE = 1;
-    public static final int ITEM_REQUESTCODE = 2;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.master_activity);
-
 
         Button createButton = (Button) findViewById(R.id.createButton);
         createButton.setOnClickListener(new View.OnClickListener() {
@@ -51,22 +38,6 @@ public class MasterActivity extends Activity implements MasterFragment.Callbacks
                 MasterActivity.this.startActivityForResult(nextActivity, NEXT_REQUESTCODE);
             }
         });
-
-        ArrayList<PassableObject> passList;
-        ArrayList<SerializableObject> serList;
-
-        serList = openObjectSerialize();
-
-        if (serList != null){
-            passList = convertSerToParse(serList);
-
-            FragmentManager fragmentManager =  getFragmentManager();
-            FragmentTransaction trans = fragmentManager.beginTransaction();
-            MasterFragment masterFragment = MasterFragment.newInstance(passList);
-            trans.replace(R.id.master_fragment_container, masterFragment, MasterFragment.TAG);
-            trans.commit();
-        }
-
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {   //When activity returns from Create
@@ -76,7 +47,7 @@ public class MasterActivity extends Activity implements MasterFragment.Callbacks
             ArrayList<SerializableObject> serList;
             Bundle result = data.getExtras();
             serList = openObjectSerialize();
-            if (serList != null){
+            if (serList != null) {
                 passList = convertSerToParse(serList);
             } else {
                 passList = new ArrayList<PassableObject>();
@@ -88,77 +59,20 @@ public class MasterActivity extends Activity implements MasterFragment.Callbacks
             String descString = result.getString("desc");
 
             //Serialize
-            SerializableObject serObject = new SerializableObject(nameString,classString,descString);
+            SerializableObject serObject = new SerializableObject(nameString, classString, descString);
             serList.add(serObject);
             objectSerialize(serList);
 
             //Parse
-            PassableObject passObject = new PassableObject(nameString,classString,descString);
+            PassableObject passObject = new PassableObject(nameString, classString, descString);
             passList.add(passObject);
 
-            FragmentManager fragmentManager =  getFragmentManager();
+            FragmentManager fragmentManager = getFragmentManager();
             FragmentTransaction trans = fragmentManager.beginTransaction();
             MasterFragment masterFragment = MasterFragment.newInstance(passList);
             trans.replace(R.id.master_fragment_container, masterFragment, MasterFragment.TAG);
             trans.commit();
         }
-        if (resultCode == RESULT_OK && requestCode == ITEM_REQUESTCODE) {
-
-            ArrayList<PassableObject> passList;
-            ArrayList<SerializableObject> serList;
-            Bundle result = data.getExtras();
-            serList = openObjectSerialize();
-            int position = result.getInt("position");
-            serList.remove(position);
-            objectSerialize(serList);
-            if (serList != null){
-                passList = convertSerToParse(serList);
-            } else {
-                passList = new ArrayList<PassableObject>();
-                serList = new ArrayList<SerializableObject>();
-            }
-            FragmentManager fragmentManager =  getFragmentManager();
-            FragmentTransaction trans = fragmentManager.beginTransaction();
-            MasterFragment masterFragment = MasterFragment.newInstance(passList);
-            trans.replace(R.id.master_fragment_container, masterFragment, MasterFragment.TAG);
-            trans.commit();
-        }
-    }
-
-
-    public ArrayList<PassableObject> convertSerToParse (ArrayList<SerializableObject> list){
-        ArrayList parseList = new ArrayList();
-        if (list != null){
-            SerializableObject currentSerObject;
-            PassableObject convertedParObject;
-
-            for (int i = 0; i < list.size(); i++){
-
-                currentSerObject = list.get(i);
-                convertedParObject = new PassableObject(currentSerObject.getNameString(), currentSerObject.getClassString(), currentSerObject.getDescString());
-                if (convertedParObject != null){
-                    parseList.add(convertedParObject);
-                }
-            }
-        } else {
-            parseList = null;
-        }
-        return parseList;
-    }
-
-    @Override
-    public void onItemSelected(PassableObject object, int position) {
-
-        String nameString = String.valueOf(object.nameChar);
-        String classString = String.valueOf(object.classChar);
-        String descString = String.valueOf(object.descChar);
-
-        Intent nextActivity = new Intent(MasterActivity.this, ItemActivity.class);
-        nextActivity.putExtra("name", nameString);
-        nextActivity.putExtra("class", classString);
-        nextActivity.putExtra("desc", descString);
-        nextActivity.putExtra("position", position);
-        MasterActivity.this.startActivityForResult(nextActivity, ITEM_REQUESTCODE);
     }
 
     public class PassableObject implements Parcelable {
@@ -213,6 +127,26 @@ public class MasterActivity extends Activity implements MasterFragment.Callbacks
 
     }
 
+    public ArrayList<PassableObject> convertSerToParse (ArrayList<SerializableObject> list){
+        ArrayList parseList = new ArrayList();
+        if (list != null){
+            SerializableObject currentSerObject;
+            PassableObject convertedParObject;
+
+            for (int i = 0; i < list.size(); i++){
+
+                currentSerObject = list.get(i);
+                convertedParObject = new PassableObject(currentSerObject.getNameString(), currentSerObject.getClassString(), currentSerObject.getDescString());
+                if (convertedParObject != null){
+                    parseList.add(convertedParObject);
+                }
+            }
+        } else {
+            parseList = null;
+        }
+        return parseList;
+    }
+
     public void objectSerialize (ArrayList<SerializableObject> list){
 
         try {
@@ -241,10 +175,13 @@ public class MasterActivity extends Activity implements MasterFragment.Callbacks
         return list;
     }
 
+
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main_actvitiy, menu);
+        getMenuInflater().inflate(R.menu.master, menu);
         return true;
     }
 
