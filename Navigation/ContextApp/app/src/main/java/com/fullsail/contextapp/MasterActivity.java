@@ -21,7 +21,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 
-public class MasterActivity extends Activity implements Serializable {
+public class MasterActivity extends Activity implements Serializable, MasterFragment.Callbacks{
 
     public static final int NEXT_REQUESTCODE = 1;
 
@@ -38,6 +38,21 @@ public class MasterActivity extends Activity implements Serializable {
                 MasterActivity.this.startActivityForResult(nextActivity, NEXT_REQUESTCODE);
             }
         });
+
+        ArrayList<PassableObject> passList;
+        ArrayList<SerializableObject> serList;
+
+        serList = openObjectSerialize();
+
+        if (serList != null){
+            passList = convertSerToParse(serList);
+
+            FragmentManager fragmentManager =  getFragmentManager();
+            FragmentTransaction trans = fragmentManager.beginTransaction();
+            MasterFragment masterFragment = MasterFragment.newInstance(passList);
+            trans.replace(R.id.master_fragment_container, masterFragment, MasterFragment.TAG);
+            trans.commit();
+        }
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {   //When activity returns from Create
@@ -173,6 +188,22 @@ public class MasterActivity extends Activity implements Serializable {
         }
 
         return list;
+    }
+
+    @Override
+    public void passPosition(int position) {
+        ArrayList<PassableObject> passList;
+        ArrayList<SerializableObject> serList;
+        serList = openObjectSerialize();
+        serList.remove(position);
+        objectSerialize(serList);
+        passList = convertSerToParse(serList);
+        FragmentManager fragmentManager =  getFragmentManager();
+        FragmentTransaction trans = fragmentManager.beginTransaction();
+        MasterFragment masterFragment = MasterFragment.newInstance(passList);
+        trans.replace(R.id.master_fragment_container, masterFragment, MasterFragment.TAG);
+        trans.commit();
+
     }
 
 
