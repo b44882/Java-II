@@ -43,9 +43,31 @@ public class MasterActivity extends Activity implements ActionBar.OnNavigationLi
         setContentView(R.layout.activity_master);
 
         blue.add("Brian Hofrichter");
+        blue.add("Brian Hofrichter");
+        blue.add("Brian Hofrichter");
+        blue.add("Brian Hofrichter");
+        blue.add("Brian Hofrichter");
+        blue.add("Brian Hofrichter");
+        blue.add("Brian Hofrichter");
+        blue.add("Brian Hofrichter");
+        blue.add("Brian Hofrichter");
+        green.add("Will Smith");
+        green.add("Will Smith");
+        green.add("Will Smith");
+        green.add("Will Smith");
+        green.add("Will Smith");
+        green.add("Will Smith");
+        green.add("Will Smith");
+        green.add("Will Smith");
         green.add("Will Smith");
         silver.add("Maddie Coker Heinen");
         silver.add("John Torres");
+        silver.add("Virginia Bland");
+        silver.add("Virginia Bland");
+        silver.add("Virginia Bland");
+        silver.add("Virginia Bland");
+        silver.add("Virginia Bland");
+        silver.add("Virginia Bland");
         silver.add("Virginia Bland");
         purple.add("Ariana Siha");
         purple.add("Janet Chiarolanza");
@@ -53,11 +75,26 @@ public class MasterActivity extends Activity implements ActionBar.OnNavigationLi
         purple.add("Nola Bennett");
         purple.add("Ron Shockley");
         purple.add("Phoebe Abdelmessih");
+        purple.add("Phoebe Abdelmessih");
+        purple.add("Phoebe Abdelmessih");
+        purple.add("Phoebe Abdelmessih");
         red.add("Audrey Gibson");
         red.add("Shelley Long");
         red.add("Alanna Cervenak");
         red.add("Jacqueline Storm");
+        red.add("Jacqueline Storm");
+        red.add("Jacqueline Storm");
+        red.add("Jacqueline Storm");
+        red.add("Jacqueline Storm");
+        red.add("Jacqueline Storm");
         orange.add("Noah Daniel Potter");
+        orange.add("Jeremy Marks");
+        orange.add("Jeremy Marks");
+        orange.add("Jeremy Marks");
+        orange.add("Jeremy Marks");
+        orange.add("Jeremy Marks");
+        orange.add("Jeremy Marks");
+        orange.add("Jeremy Marks");
         orange.add("Jeremy Marks");
 
 
