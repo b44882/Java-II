@@ -65,7 +65,7 @@ public class MasterActivity extends Activity
         } else if (position == 1){
             FragmentManager fragmentManager = getFragmentManager();
             fragmentManager.beginTransaction()
-                    .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
+                    .replace(R.id.container, RecentFragment.newInstance(recent))
                     .commit();
 
         } else if (position == 2) {
@@ -77,7 +77,7 @@ public class MasterActivity extends Activity
         } else if (position == 3) {
             FragmentManager fragmentManager = getFragmentManager();
             fragmentManager.beginTransaction()
-                    .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
+                    .replace(R.id.container, new SettingsFragment())
                     .commit();
         }
 
