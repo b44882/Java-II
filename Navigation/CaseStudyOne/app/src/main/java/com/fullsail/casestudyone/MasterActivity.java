@@ -6,6 +6,7 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -45,13 +46,17 @@ public class MasterActivity extends Activity implements ActionBar.OnNavigationLi
         green.add("Will Smith");
         silver.add("Maddie Coker Heinen");
         silver.add("John Torres");
+        silver.add("Virginia Bland");
         purple.add("Ariana Siha");
         purple.add("Janet Chiarolanza");
         purple.add("Laura Ashley");
         purple.add("Nola Bennett");
+        purple.add("Ron Shockley");
+        purple.add("Phoebe Abdelmessih");
         red.add("Audrey Gibson");
         red.add("Shelley Long");
         red.add("Alanna Cervenak");
+        red.add("Jacqueline Storm");
         orange.add("Noah Daniel Potter");
         orange.add("Jeremy Marks");
 
@@ -119,18 +124,27 @@ public class MasterActivity extends Activity implements ActionBar.OnNavigationLi
     @Override
     public boolean onNavigationItemSelected(int position, long id) {
 
+        View view = findViewById(R.id.master_fragment_container);
+        View root = view.getRootView();
+
         if (id == 0){
             passList = blue;
+            getActionBar().setIcon(R.drawable.ic_blue);
         } else if (id == 1) {
             passList = green;
+            getActionBar().setIcon(R.drawable.ic_green);
         } else if (id == 2) {
             passList = silver;
+            getActionBar().setIcon(R.drawable.ic_silver);
         } else if (id == 3) {
             passList = purple;
+            getActionBar().setIcon(R.drawable.ic_purple);
         } else if (id == 4) {
             passList = red;
+            getActionBar().setIcon(R.drawable.ic_red);
         } else if (id == 5) {
             passList = orange;
+            getActionBar().setIcon(R.drawable.ic_orange);
         }
 
         FragmentManager fragmentManager =  getFragmentManager();
