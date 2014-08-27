@@ -112,67 +112,13 @@ public class CurrentActivity extends Activity implements ActionBar.TabListener {
         int position = tab.getPosition();
         String urlString;
         if (position == 0){
-            try{
-                urlString = "http://api.wunderground.com/api/78a366bca828eaa0/conditions/q/FL/Orlando.json";
-                URL queryURL = new URL(urlString);
-                new GetCurrentCast().execute(queryURL);
 
-            } catch (Exception e) {
-
-            }
         } else if (position == 1){
 
         } else if (position == 2){
 
         }
 
-    }
-
-    private class GetCurrentCast extends AsyncTask<URL, Integer, JSONObject> {
-        protected JSONObject doInBackground(URL... urls) {
-            String jsonString = "";
-            for(URL queryURL : urls){
-                try{
-                    URLConnection conn = queryURL.openConnection();
-                    jsonString = IOUtils.toString(conn.getInputStream());
-                } catch (Exception e){
-                    return null;
-                }
-            }
-            JSONObject apiData;
-            try{
-                apiData = new JSONObject(jsonString);
-            } catch (Exception e){
-                apiData = null;
-            }
-            return apiData;
-        }
-        protected void onPostExecute(JSONObject apiData){
-
-            JSONObject currentObject = null;
-            JSONArray apiDataArray;
-            List<JSONObject> myList = null;
-            try {
-                currentObject = (apiData != null) ? apiData.getJSONObject("current_observation") : null;
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            if (currentObject != null){
-
-                try {
-                    int temp = (currentObject != null) ? currentObject.getInt("temp_f") : null;
-                    String weather = (currentObject != null) ? currentObject.getString("weather") : null;
-                    FragmentManager fragmentManager = getFragmentManager();
-                    FragmentTransaction trans = fragmentManager.beginTransaction();
-                    CurrentFragment currentFragment = CurrentFragment.newInstance(String.valueOf(temp), weather);
-                    trans.replace(R.id.pager, currentFragment, CurrentFragment.TAG);
-                    trans.commit();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-            }
-        }
     }
 
     @Override
@@ -195,9 +141,18 @@ public class CurrentActivity extends Activity implements ActionBar.TabListener {
 
         @Override
         public Fragment getItem(int position) {
-            // getItem is called to instantiate the fragment for the given page.
-            // Return a PlaceholderFragment (defined as a static inner class below).
-            return PlaceholderFragment.newInstance(position + 1);
+            switch (position){
+                case 0:
+                    return CurrentFragment.newInstance();
+                case 1:
+                    ArrayList listArray = new ArrayList();
+                    listArray.add("test1");
+                    listArray.add("test2");
+                    return HourFragment.newInstance(listArray);
+                default: return CurrentFragment.newInstance();
+            }
+
+
         }
 
         @Override
@@ -221,37 +176,51 @@ public class CurrentActivity extends Activity implements ActionBar.TabListener {
         }
     }
 
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private static final String ARG_SECTION_NUMBER = "section_number";
 
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
+    private class GetWeekCast extends AsyncTask<URL, Integer, JSONObject> {
+        protected JSONObject doInBackground(URL... urls) {
+            String jsonString = "";
+            for(URL queryURL : urls){
+                try{
+                    URLConnection conn = queryURL.openConnection();
+                    jsonString = IOUtils.toString(conn.getInputStream());
+                } catch (Exception e){
+                    return null;
+                }
+            }
+            JSONObject apiData;
+            try{
+                apiData = new JSONObject(jsonString);
+            } catch (Exception e){
+                apiData = null;
+            }
+            return apiData;
         }
+        protected void onPostExecute(JSONObject apiData){
 
-        public PlaceholderFragment() {
-        }
+            JSONArray currentArray = null;
+            try {
+                currentArray = (apiData != null) ? apiData.getJSONArray("hourly_forecast") : null;
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            if (currentArray != null){
+                ArrayList myList = null;
+                try {
+                    for (int i = 0; i < 8; i++) {
+                        String time = currentArray.getJSONObject(i).getJSONObject("FCTTIME").getString("civil");
+                        String temp = currentArray.getJSONObject(i).getJSONObject("temp").getString("english");
+                        String weather = currentArray.getJSONObject(i).getString("condition");
+                        String combined = time + " " + temp + " " + weather;
+                        if (myList == null) {
+                            myList = new ArrayList();
+                        }
+                        myList.add(combined);
+                    }
+                } catch (JSONException e) {
 
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            return rootView;
+                }
+            }
         }
     }
-
 }

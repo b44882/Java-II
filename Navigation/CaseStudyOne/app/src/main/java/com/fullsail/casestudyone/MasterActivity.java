@@ -43,32 +43,32 @@ public class MasterActivity extends Activity implements ActionBar.OnNavigationLi
         setContentView(R.layout.activity_master);
 
         blue.add("Brian Hofrichter");
-        blue.add("Brian Hofrichter");
-        blue.add("Brian Hofrichter");
-        blue.add("Brian Hofrichter");
-        blue.add("Brian Hofrichter");
-        blue.add("Brian Hofrichter");
-        blue.add("Brian Hofrichter");
-        blue.add("Brian Hofrichter");
-        blue.add("Brian Hofrichter");
-        green.add("Will Smith");
-        green.add("Will Smith");
-        green.add("Will Smith");
-        green.add("Will Smith");
-        green.add("Will Smith");
-        green.add("Will Smith");
-        green.add("Will Smith");
-        green.add("Will Smith");
+        blue.add("Test1");
+        blue.add("Test2");
+        blue.add("Test3");
+        blue.add("Test4");
+        blue.add("Test5");
+        blue.add("Test6");
+        blue.add("Test7");
+        blue.add("Test8");
+        green.add("McMuffin Kati");
+        green.add("Test1");
+        green.add("Test2");
+        green.add("Test3");
+        green.add("Test4");
+        green.add("Test5");
+        green.add("Test6");
+        green.add("Test7");
         green.add("Will Smith");
         silver.add("Maddie Coker Heinen");
         silver.add("John Torres");
         silver.add("Virginia Bland");
         silver.add("Juan Fernandez");
         silver.add("Virginia Bland");
+        silver.add("James Williams");
         silver.add("Virginia Bland");
-        silver.add("Virginia Bland");
-        silver.add("Virginia Bland");
-        silver.add("Virginia Bland");
+        silver.add("Test1");
+        silver.add("Test2");
         purple.add("Ariana Siha");
         purple.add("Janet Chiarolanza");
         purple.add("Laura Ashley");
@@ -77,25 +77,25 @@ public class MasterActivity extends Activity implements ActionBar.OnNavigationLi
         purple.add("Phoebe Abdelmessih");
         purple.add("Stephanie Cone");
         purple.add("Phoebe Abdelmessih");
-        purple.add("Phoebe Abdelmessih");
+        purple.add("Charlene Leung");
         red.add("Audrey Gibson");
         red.add("Shelley Long");
         red.add("Alanna Cervenak");
         red.add("Jacqueline Storm");
-        red.add("Jacqueline Storm");
-        red.add("Jacqueline Storm");
-        red.add("Jacqueline Storm");
-        red.add("Jacqueline Storm");
-        red.add("Jacqueline Storm");
+        red.add("Test1");
+        red.add("Test2");
+        red.add("Test3");
+        red.add("Test4");
+        red.add("Test5");
         orange.add("Noah Daniel Potter");
+        orange.add("Test1");
+        orange.add("Test2");
+        orange.add("Test3");
+        orange.add("Test4");
+        orange.add("Test5");
         orange.add("Jeremy Marks");
-        orange.add("Jeremy Marks");
-        orange.add("Jeremy Marks");
-        orange.add("Jeremy Marks");
-        orange.add("Jeremy Marks");
-        orange.add("Jeremy Marks");
-        orange.add("Jeremy Marks");
-        orange.add("Jeremy Marks");
+        orange.add("Test6");
+        orange.add("Test7");
 
 
         // Set up the action bar to show a dropdown list.
@@ -117,7 +117,6 @@ public class MasterActivity extends Activity implements ActionBar.OnNavigationLi
                                 getString(R.string.title_section4),
                                 getString(R.string.title_section5),
                                 getString(R.string.title_section6),
-
                         }),
                 this);
     }

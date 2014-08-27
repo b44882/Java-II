@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <PreferenceCategory android:title="Connection Settings" >
+
+        <Preference
+            android:key="NETWORK_CLICK"
+            android:summary="Get fresh data from Network."
+            android:title="Data from Network" />
+
+        <Preference
+            android:key="LOCAL_CLICK"
+            android:summary="Used previously stored data."
+            android:title="Data from Local Storage" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>
