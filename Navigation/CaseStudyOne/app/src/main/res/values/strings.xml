@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">CaseStudyOne</string>
+    <string name="title_section1">Blue Barracudas</string>
+    <string name="title_section2">Green Monkeys</string>
+    <string name="title_section3">Silver Snakes</string>
+    <string name="title_section4">Purple Parrots</string>
+    <string name="title_section5">Red Jaguars</string>
+    <string name="title_section6">Orange Iguanas</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+
+</resources>
