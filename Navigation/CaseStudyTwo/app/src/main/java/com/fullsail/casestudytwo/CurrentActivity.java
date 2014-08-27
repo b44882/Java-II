@@ -126,7 +126,6 @@ public class CurrentActivity extends Activity implements ActionBar.TabListener {
 
         }
 
-
     }
 
     private class GetCurrentCast extends AsyncTask<URL, Integer, JSONObject> {
@@ -163,10 +162,14 @@ public class CurrentActivity extends Activity implements ActionBar.TabListener {
                 try {
                     int temp = (currentObject != null) ? currentObject.getInt("temp_f") : null;
                     String weather = (currentObject != null) ? currentObject.getString("weather") : null;
+                    FragmentManager fragmentManager = getFragmentManager();
+                    FragmentTransaction trans = fragmentManager.beginTransaction();
+                    CurrentFragment currentFragment = CurrentFragment.newInstance(String.valueOf(temp), weather);
+                    trans.replace(R.id.pager, currentFragment, CurrentFragment.TAG);
+                    trans.commit();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
 
             }
         }
@@ -246,7 +249,7 @@ public class CurrentActivity extends Activity implements ActionBar.TabListener {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_current, container, false);
+            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
             return rootView;
         }
     }

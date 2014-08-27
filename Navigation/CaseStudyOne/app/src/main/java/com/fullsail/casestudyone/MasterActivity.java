@@ -63,7 +63,7 @@ public class MasterActivity extends Activity implements ActionBar.OnNavigationLi
         silver.add("Maddie Coker Heinen");
         silver.add("John Torres");
         silver.add("Virginia Bland");
-        silver.add("Virginia Bland");
+        silver.add("Juan Fernandez");
         silver.add("Virginia Bland");
         silver.add("Virginia Bland");
         silver.add("Virginia Bland");
@@ -75,7 +75,7 @@ public class MasterActivity extends Activity implements ActionBar.OnNavigationLi
         purple.add("Nola Bennett");
         purple.add("Ron Shockley");
         purple.add("Phoebe Abdelmessih");
-        purple.add("Phoebe Abdelmessih");
+        purple.add("Stephanie Cone");
         purple.add("Phoebe Abdelmessih");
         purple.add("Phoebe Abdelmessih");
         red.add("Audrey Gibson");
