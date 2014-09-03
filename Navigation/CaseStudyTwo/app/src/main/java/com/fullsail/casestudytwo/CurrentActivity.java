@@ -1,3 +1,6 @@
+//Brett Gear
+//Java 1408
+
 package com.fullsail.casestudytwo;
 
 import java.net.URL;
